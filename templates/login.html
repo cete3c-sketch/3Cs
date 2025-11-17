@@ -6,14 +6,15 @@
   <title>Login — AKU Covariate Ranking Tool</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    body.login-body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #f0f5f3;
-      font-family: "Poppins", sans-serif;
-    }
+ body.login-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #005D4B;   /* <-- exact green from your image */        /*#007F3F*/
+  font-family: "Poppins", sans-serif;
+}
+
     .login-wrapper {
       display: flex;
       justify-content: center;
@@ -28,7 +29,7 @@
       text-align: center;
       width: 360px;
     }
-    .login-logo { width: 120px; margin-bottom: 1rem; }
+    .login-logo { width: 300px; margin-bottom: 1rem; }
     .login-title { font-size: 1.4rem; font-weight: 600; margin: 0; color: #00693e; }
     .login-subtitle { font-size: 1rem; color: #333; margin-bottom: 1.5rem; }
     .login-input-group { margin-bottom: 1rem; text-align: left; }
@@ -105,14 +106,14 @@
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyCevwr28eZeyCmyM6JFr_bw0MYuKQP1hug",
-        authDomain: "css-f1363.firebaseapp.com",
-        projectId: "css-f1363",
-        storageBucket: "css-f1363.firebasestorage.app",
-        messagingSenderId: "655588702304",
-        appId: "1:655588702304:web:972845b826c09c55f86b05",
-        measurementId: "G-KRE1NL0YCS"
-      };
+      apiKey: "AIzaSyB6TVxELSN8s3p3iGPQ0eLDdmslyeyqFFk",
+      authDomain: "webportalaku.firebaseapp.com",
+      projectId: "webportalaku",
+      storageBucket: "webportalaku.firebasestorage.app",
+      messagingSenderId: "591837019653",
+      appId: "1:591837019653:web:cb691997e1d0fa183f266c",
+      measurementId: "G-J3Z5S011DP"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -192,4 +193,3 @@
   </script>
 </body>
 </html>
-
