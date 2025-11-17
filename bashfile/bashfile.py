@@ -13,18 +13,9 @@ from rapidfuzz import fuzz, process
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-import argparse
-
-
-
-
-from .create_VI import create_VI
-from .create_dataframe import Initialize_datafrmae_with_covrank
-from .pca import pca
-
-
-
-
+from create_VI import create_VI
+from create_dataframe import Initialize_datafrmae_with_covrank
+from pca import pca 
 
 
 
@@ -71,18 +62,21 @@ def main_function(input_folder, output_folder):
         print("\nAll files processed successfully.")
 
 
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run covariate ranking")
     parser.add_argument("input_folder")
     parser.add_argument("output_folder")
     args = parser.parse_args()
-    main_function(args.input_folder, args.output_folder)
+    main_function(args.input_folder,args.output_folder)
+
 
 
 #  python bashfile.py ..\..\camrooon\new\5_flood_camroon\output ..\output_file\camroon
-#  python bashfile.py ..\Burkina_faso\new\5_flood_BF\output output_file\burkina
-#  python bashfile.py ..\DRC\new\5_flood_drc\output output_file\DRC
-#  python bashfile.py ..\Ethopia\6_food_insurity\food_insecurity_output_ethopia output_file\Ethopia
+#  python bashfile.py ..\..\Burkina_faso\new\5_flood_BF\output ..\output_file\burkina
+#  python bashfile.py ..\..\DRC\new\5_flood_drc\output ..\output_file\DRC
+#  python bashfile.py ..\..\Ethopia\6_food_insurity\food_insecurity_output_ethopia ..\output_file\Ethopia
 
 
 
