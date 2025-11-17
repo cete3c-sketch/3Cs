@@ -1,0 +1,29 @@
+# --- Python cache and bytecode ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Virtual environments ---
+venv/
+env/
+.venv/
+
+# --- Local data folders (runtime only) ---
+uploads/
+output/
+temp/
+
+# --- Environment variables ---
+.env
+
+# --- System files ---
+.DS_Store
+Thumbs.db
+
+# --- IDE/editor files ---
+.vscode/
+.idea/
+
+# --- Logs and misc ---
+*.log

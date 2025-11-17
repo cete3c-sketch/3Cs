@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AKU Covariate Ranking Tool</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body><header class="navbar">
+  <div class="nav-content">
+    <div class="nav-left">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="AKU Logo" class="nav-logo">
+      <h1 class="nav-title">Aga Khan University — Covariate Ranking Tool</h1>
+    </div>
+
+    <div class="nav-right">
+      <form action="{{ url_for('logout') }}" method="GET">
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </div>
+  </div>
+</header>
+
+  
+
+  <main class="container">
+    <section class="card">
+      <h2 class="title">Upload Your Data</h2>
+      <p class="subtitle">Submit a ZIP file or folder to generate covariate rankings.</p>
+
+      <form id="uploadForm" method="POST" enctype="multipart/form-data">
+        <div class="file-group">
+          <label class="upload-label">Choose Input Folder or ZIP File</label>
+          <input type="file" name="input_folder" webkitdirectory directory multiple>
+          <p class="hint">Supports both zipped folders and direct folder uploads.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Run Analysis</button>
+      </form>
+
+      <div id="progress" class="hidden status-box">
+        <div class="spinner"></div>
+        <p>Processing your data... Please wait ⏳</p>
+      </div>
+
+      <div id="result" class="hidden status-box success">
+        <p>✅ Processing Complete!</p>
+        <button id="downloadBtn" class="btn btn-success">Download Results</button>
+      </div>
+
+      <div id="errorBox" class="hidden status-box error">
+        <p>❌ Error: <span id="errorMsg"></span></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© {{ 2025 }} Aga Khan University | Developed by CETE </p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const progress = document.getElementById('progress');
+    const result = document.getElementById('result');
+    const errorBox = document.getElementById('errorBox');
+    const errorMsg = document.getElementById('errorMsg');
+    const downloadBtn = document.getElementById('downloadBtn');
+    let downloadFilename = "";
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      progress.classList.remove('hidden');
+      result.classList.add('hidden');
+      errorBox.classList.add('hidden');
+
+      const formData = new FormData(form);
+      const response = await fetch('/', { method: 'POST', body: formData });
+      const data = await response.json();
+
+      progress.classList.add('hidden');
+      if (data.status === 'success') {
+        downloadFilename = data.download_filename;
+        result.classList.remove('hidden');
+      } else {
+        errorMsg.textContent = data.message || 'An unexpected error occurred.';
+        errorBox.classList.remove('hidden');
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (downloadFilename) {
+        window.location.href = `/download/${downloadFilename}`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — AKU Covariate Ranking Tool</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body.login-body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f5f3;
+      font-family: "Poppins", sans-serif;
+    }
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    .login-card {
+      background: #fff;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 360px;
+    }
+    .login-logo { width: 120px; margin-bottom: 1rem; }
+    .login-title { font-size: 1.4rem; font-weight: 600; margin: 0; color: #00693e; }
+    .login-subtitle { font-size: 1rem; color: #333; margin-bottom: 1.5rem; }
+    .login-input-group { margin-bottom: 1rem; text-align: left; }
+    .login-input-group input {
+      width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;
+      font-size: 1rem; transition: all 0.2s;
+    }
+    .login-input-group input:focus {
+      border-color: #00693e; outline: none;
+      box-shadow: 0 0 5px rgba(0, 105, 62, 0.3);
+    }
+    .btn-login {
+      background: #00693e; color: #fff; border: none;
+      padding: 10px 20px; font-size: 1rem; border-radius: 6px;
+      cursor: pointer; width: 100%; transition: background 0.3s ease;
+    }
+    .btn-login:hover { background: #00552f; }
+    .login-error { color: red; margin-bottom: 1rem; font-size: 0.9rem; }
+    .login-footer { font-size: 0.8rem; color: #777; margin-top: 1.5rem; }
+    .btn-toggle {
+      background: none;
+      border: none;
+      color: #00693e;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0 0.5rem;
+    }
+    .btn-toggle.active { text-decoration: underline; }
+  </style>
+</head>
+<body class="login-body">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="AKU Logo" class="login-logo">
+      <h1 class="login-title">Aga Khan University</h1>
+      <h2 class="login-subtitle">Covariate Ranking Portal</h2>
+
+      <!-- Toggle Buttons -->
+      <div style="margin-bottom:1rem;">
+        <button id="showLogin" class="btn-toggle active">Login</button>
+        <button id="showSignUp" class="btn-toggle">Sign Up</button>
+      </div>
+
+      <form id="authForm">
+        <p class="login-error" id="errorBox"></p>
+
+        <!-- Full Name (Sign Up only) -->
+        <div class="login-input-group" id="nameGroup" style="display:none;">
+          <input type="text" id="fullName" placeholder="Full Name">
+        </div>
+
+        <div class="login-input-group">
+          <input type="email" id="email" placeholder="Email" required>
+        </div>
+        <div class="login-input-group">
+          <input type="password" id="password" placeholder="Password" required>
+        </div>
+
+        <!-- Confirm Password (Sign Up only) -->
+        <div class="login-input-group" id="confirmGroup" style="display:none;">
+          <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        </div>
+
+        <button type="submit" class="btn-login" id="authButton">Login</button>
+      </form>
+
+      <p class="login-footer">© 2025 Aga Khan University</p>
+    </div>
+  </div>
+
+  <!-- Firebase Authentication Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6TVxELSN8s3p3iGPQ0eLDdmslyeyqFFk",
+      authDomain: "webportalaku.firebaseapp.com",
+      projectId: "webportalaku",
+      storageBucket: "webportalaku.firebasestorage.app",
+      messagingSenderId: "591837019653",
+      appId: "1:591837019653:web:cb691997e1d0fa183f266c",
+      measurementId: "G-J3Z5S011DP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const authForm = document.getElementById("authForm");
+    const authButton = document.getElementById("authButton");
+    const errorBox = document.getElementById("errorBox");
+
+    const nameGroup = document.getElementById("nameGroup");
+    const confirmGroup = document.getElementById("confirmGroup");
+
+    let isLogin = true;
+
+    // Toggle Buttons
+    document.getElementById("showLogin").addEventListener("click", () => {
+      isLogin = true;
+      authButton.textContent = "Login";
+      nameGroup.style.display = "none";
+      confirmGroup.style.display = "none";
+      document.getElementById("showLogin").classList.add("active");
+      document.getElementById("showSignUp").classList.remove("active");
+      errorBox.textContent = "";
+    });
+
+    document.getElementById("showSignUp").addEventListener("click", () => {
+      isLogin = false;
+      authButton.textContent = "Sign Up";
+      nameGroup.style.display = "block";
+      confirmGroup.style.display = "block";
+      document.getElementById("showSignUp").classList.add("active");
+      document.getElementById("showLogin").classList.remove("active");
+      errorBox.textContent = "";
+    });
+
+    // Form Submit
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorBox.textContent = "";
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!isLogin) {
+        const fullName = document.getElementById("fullName").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+          errorBox.textContent = "Passwords do not match!";
+          return;
+        }
+
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          await updateProfile(userCredential.user, { displayName: fullName });
+
+          const token = await userCredential.user.getIdToken();
+          document.cookie = `firebase_token=${token}; path=/; secure`;
+          window.location.href = "/";
+        } catch (error) {
+          console.error(error);
+          errorBox.textContent = error.message;
+        }
+
+      } else {
+        // Login
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const token = await userCredential.user.getIdToken();
+          document.cookie = `firebase_token=${token}; path=/; secure`;
+          window.location.href = "/";
+        } catch (error) {
+          console.error(error);
+          errorBox.textContent = "Invalid email or password.";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
